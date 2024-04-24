@@ -42,5 +42,10 @@ class MockAwardCeremonyActions : public AwardCeremonyActions {
 TEST(AwardsTests, performAwardCeremonyTest) {
   MockRankList ranklist;
   MockAwardCeremonyActions actions;
+  std::stringstream buffer;
+  std::streambuf* oldCoutStreamBuf = std::cout.rdbuf(buffer.rdbuf());
   awards::performAwardCeremony(ranklist, actions);
+  std::cout.rdbuf(oldCoutStreamBuf);
+  std::string expected_output = "Playing the anthem\nAwarding bronze medal to AAA\nAwarding silver medal to AAA\nAwarding gold medal to AAA\nTurning off the lights and going home\n";
+  EXPECT_EQ(buffer.str(), expected_output);
 }
