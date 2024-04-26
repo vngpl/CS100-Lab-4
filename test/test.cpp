@@ -19,6 +19,7 @@ TEST(TriangleTests, testPerimeter) {
 TEST(TriangleTests, testArea) {
   Triangle *aTriangle = new Triangle(5, 4, 3);
   EXPECT_DOUBLE_EQ(aTriangle->getArea(), 6.0);
+}
 
 TEST(TriangleTests, testKindEquilateral) {
   Triangle *aTriangle = new Triangle(3, 3, 3);
@@ -64,6 +65,7 @@ TEST(HailstoneTests, testEven) {
 
 TEST(HailstoneTests, testOthers) {
   EXPECT_TRUE(sequence::satisfiesHailstone(19937));
+}
   
 // <<<<<<< AwardTestingBranch
 #include "gmock/gmock.h"
