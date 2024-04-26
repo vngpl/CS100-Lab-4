@@ -74,22 +74,24 @@ TEST(HailstoneTests, testOthers) {
 using awards::AwardCeremonyActions;
 using awards::RankList;
 using ::testing::AtLeast;
+using ::testing::InSequence;
 
 class RankListStub : public RankList {
  private:
-  std::vector<std::string> names;
+  std::vector<std::string> names = {"A", "B", "C"};
   int currNameIndex;
  public:
   RankListStub() : currNameIndex(0) { 
     for (int i = 0; i < 10; i++) {
-      names.push_back(std::to_string(i + 42));
-      // names.push_back("This is a name.");
+      // names.push_back(std::to_string(i + 42));
+      names.push_back("This is a name.");
     } 
   };
   std::string getNext() override {
-    if (currNameIndex < (int)names.size()) {
-      return names[currNameIndex++];
-    }
+    // if (currNameIndex < (int)names.size()) {
+    //   return names[currNameIndex++];
+    // }
+    return "Name";
   }
   std::vector<std::string> getNames() { return names; }
 };
@@ -107,12 +109,16 @@ class MockAwardCeremonyActions : public AwardCeremonyActions {
 TEST(AwardsTests, performAwardCeremonyTest) {
   RankListStub ranklist;
   MockAwardCeremonyActions awardCeremonyActions;
+  
+  {
+    InSequence seq;
 
-  EXPECT_CALL(awardCeremonyActions, playAnthem()).Times(AtLeast(1));
-  EXPECT_CALL(awardCeremonyActions, awardBronze(ranklist.getNext())).Times(AtLeast(1));
-  EXPECT_CALL(awardCeremonyActions, awardSilver(ranklist.getNext())).Times(AtLeast(1));
-  EXPECT_CALL(awardCeremonyActions, awardGold(ranklist.getNext())).Times(AtLeast(1));
-  EXPECT_CALL(awardCeremonyActions, turnOffTheLightsAndGoHome()).Times(AtLeast(1));
+    EXPECT_CALL(awardCeremonyActions, playAnthem()).Times(AtLeast(1));
+    EXPECT_CALL(awardCeremonyActions, awardBronze(ranklist.getNext())).Times(AtLeast(1));
+    EXPECT_CALL(awardCeremonyActions, awardSilver(ranklist.getNext())).Times(AtLeast(1));
+    EXPECT_CALL(awardCeremonyActions, awardGold(ranklist.getNext())).Times(AtLeast(1));
+    EXPECT_CALL(awardCeremonyActions, turnOffTheLightsAndGoHome()).Times(AtLeast(1));
+  }
 
   performAwardCeremony(ranklist, awardCeremonyActions);
 }
