@@ -1,5 +1,8 @@
+// <<<<<<< TriangleTestingBranch
 #include "../include/Triangle.h"
 #include "gtest/gtest.h"
+#include <vector>
+
 using shapes::Triangle;
 
 // TEST(TriangleTests, testPerimeter) {
@@ -16,7 +19,6 @@ TEST(TriangleTests, testPerimeter) {
 TEST(TriangleTests, testArea) {
   Triangle *aTriangle = new Triangle(5, 4, 3);
   EXPECT_DOUBLE_EQ(aTriangle->getArea(), 6.0);
-}
 
 TEST(TriangleTests, testKindEquilateral) {
   Triangle *aTriangle = new Triangle(3, 3, 3);
@@ -41,4 +43,74 @@ TEST(TriangleTests, testKindIsosceles) {
 TEST(TriangleTests, testKindScalene) {
   Triangle *aTriangle = new Triangle(5, 4, 3);
   EXPECT_EQ(aTriangle->getKind(), Triangle::Kind::SCALENE);
+}
+  
+// <<<<<<< HailstoneTestingBranch
+#include "../include/Hailstone.h"
+
+using sequence::satisfiesHailstone;
+
+TEST(HailstoneTests, testZero) {
+  EXPECT_FALSE(sequence::satisfiesHailstone(0));
+}
+
+TEST(HailstoneTests, testOne) {
+  EXPECT_TRUE(sequence::satisfiesHailstone(1));
+}
+
+TEST(HailstoneTests, testEven) {
+  EXPECT_TRUE(sequence::satisfiesHailstone(4));
+}
+
+TEST(HailstoneTests, testOthers) {
+  EXPECT_TRUE(sequence::satisfiesHailstone(19937));
+  
+// <<<<<<< AwardTestingBranch
+#include "gmock/gmock.h"
+#include "../include/Awards.h"
+  
+using awards::AwardCeremonyActions;
+using awards::RankList;
+using ::testing::AtLeast;
+
+class RankListStub : public RankList {
+ private:
+  std::vector<std::string> names;
+  int currNameIndex;
+ public:
+  RankListStub() : currNameIndex(0) { 
+    for (int i = 0; i < 10; i++) {
+      names.push_back(std::to_string(i + 42));
+      // names.push_back("This is a name.");
+    } 
+  };
+  std::string getNext() override {
+    if (currNameIndex < (int)names.size()) {
+      return names[currNameIndex++];
+    }
+  }
+  std::vector<std::string> getNames() { return names; }
+};
+
+class MockAwardCeremonyActions : public AwardCeremonyActions {
+ public:
+  MOCK_METHOD(void, playAnthem, (), (override));
+  MOCK_METHOD(void, turnOffTheLightsAndGoHome, (), (override));
+  MOCK_METHOD(void, awardBronze, (std::string recipient), (override));
+  MOCK_METHOD(void, awardSilver, (std::string recipient), (override));
+  MOCK_METHOD(void, awardGold, (std::string recipient), (override));
+};
+
+// Test MockAwardCeremonyActions
+TEST(AwardsTests, performAwardCeremonyTest) {
+  RankListStub ranklist;
+  MockAwardCeremonyActions awardCeremonyActions;
+
+  EXPECT_CALL(awardCeremonyActions, playAnthem()).Times(AtLeast(1));
+  EXPECT_CALL(awardCeremonyActions, awardBronze(ranklist.getNext())).Times(AtLeast(1));
+  EXPECT_CALL(awardCeremonyActions, awardSilver(ranklist.getNext())).Times(AtLeast(1));
+  EXPECT_CALL(awardCeremonyActions, awardGold(ranklist.getNext())).Times(AtLeast(1));
+  EXPECT_CALL(awardCeremonyActions, turnOffTheLightsAndGoHome()).Times(AtLeast(1));
+
+  performAwardCeremony(ranklist, awardCeremonyActions);
 }
