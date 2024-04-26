@@ -1,14 +1,54 @@
+// <<<<<<< TriangleTestingBranch
+#include "../include/Triangle.h"
+#include "gtest/gtest.h"
 #include <vector>
 
-// #include "../include/Triangle.h"
-#include "gtest/gtest.h"
+using shapes::Triangle;
 
+// TEST(TriangleTests, testPerimeter) {
+//   Triangle *aTriangle = new Triangle(3, 3, 3);
+//   EXPECT_EQ(aTriangle->getPerimeter(), 9);
+// }
+
+// 3 tests to check perimeter, area, and kind
+TEST(TriangleTests, testPerimeter) {
+  Triangle *aTriangle = new Triangle(3, 2, 3);
+  EXPECT_EQ(aTriangle->getPerimeter(), 8);
+}
+
+TEST(TriangleTests, testArea) {
+  Triangle *aTriangle = new Triangle(5, 4, 3);
+  EXPECT_DOUBLE_EQ(aTriangle->getArea(), 6.0);
+
+TEST(TriangleTests, testKindEquilateral) {
+  Triangle *aTriangle = new Triangle(3, 3, 3);
+  EXPECT_EQ(aTriangle->getKind(), Triangle::Kind::EQUILATERAL);
+}
+
+// 1 test to check death
+TEST(TriangleTests, testDeath) {
+  EXPECT_DEATH({Triangle tri(1, 1, 2);}, "invalid triangle");
+}
+
+// 3 additional tests
+TEST(TriangleTests, testNoThrow) {
+  EXPECT_NO_THROW({Triangle tri(5, 4, 3);});
+}
+
+TEST(TriangleTests, testKindIsosceles) {
+  Triangle *aTriangle = new Triangle(3, 3, 2);
+  EXPECT_EQ(aTriangle->getKind(), Triangle::Kind::ISOSCELES);
+}
+
+TEST(TriangleTests, testKindScalene) {
+  Triangle *aTriangle = new Triangle(5, 4, 3);
+  EXPECT_EQ(aTriangle->getKind(), Triangle::Kind::SCALENE);
+}
+  
 // <<<<<<< HailstoneTestingBranch
-
 #include "../include/Hailstone.h"
 
 using sequence::satisfiesHailstone;
-
 
 TEST(HailstoneTests, testZero) {
   EXPECT_FALSE(sequence::satisfiesHailstone(0));
@@ -27,9 +67,8 @@ TEST(HailstoneTests, testOthers) {
   
 // <<<<<<< AwardTestingBranch
 #include "gmock/gmock.h"
-// using shapes::Triangle;
-
 #include "../include/Awards.h"
+  
 using awards::AwardCeremonyActions;
 using awards::RankList;
 using ::testing::AtLeast;
@@ -53,12 +92,6 @@ class RankListStub : public RankList {
   std::vector<std::string> getNames() { return names; }
 };
 
-// Test MockRankList
-// TEST(AwardsTesting, GetNextTest) {
-//   MockRankList* ranklist = new MockRankList();
-//   EXPECT_EQ(ranklist->getNext(), "AAA");
-// }
-
 class MockAwardCeremonyActions : public AwardCeremonyActions {
  public:
   MOCK_METHOD(void, playAnthem, (), (override));
@@ -66,22 +99,6 @@ class MockAwardCeremonyActions : public AwardCeremonyActions {
   MOCK_METHOD(void, awardBronze, (std::string recipient), (override));
   MOCK_METHOD(void, awardSilver, (std::string recipient), (override));
   MOCK_METHOD(void, awardGold, (std::string recipient), (override));
-  
-  // void playAnthem() {
-  //   std::cout << "Playing the anthem" << std::endl;
-  // }
-  // void turnOffTheLightsAndGoHome() {
-  //   std::cout << "Turning off the lights and going home" << std::endl;
-  // }
-  // void awardBronze(std::string recipient) {
-  //   std::cout << "Awarding bronze medal to " << recipient << std::endl;
-  // }
-  // void awardSilver(std::string recipient) {
-  //   std::cout << "Awarding silver medal to " << recipient << std::endl;
-  // }
-  // void awardGold(std::string recipient) {
-  //   std::cout << "Awarding gold medal to " << recipient << std::endl;
-  // }
 };
 
 // Test MockAwardCeremonyActions
@@ -96,13 +113,4 @@ TEST(AwardsTests, performAwardCeremonyTest) {
   EXPECT_CALL(awardCeremonyActions, turnOffTheLightsAndGoHome()).Times(AtLeast(1));
 
   performAwardCeremony(ranklist, awardCeremonyActions);
-
-  // MockRankList ranklist;
-  // MockAwardCeremonyActions actions;
-  // std::stringstream buffer;
-  // std::streambuf* oldCoutStreamBuf = std::cout.rdbuf(buffer.rdbuf());
-  // awards::performAwardCeremony(ranklist, actions);
-  // std::cout.rdbuf(oldCoutStreamBuf);
-  // std::string expected_output = "Playing the anthem\nAwarding bronze medal to AAA\nAwarding silver medal to AAA\nAwarding gold medal to AAA\nTurning off the lights and going home\n";
-  // EXPECT_EQ(buffer.str(), expected_output);
 }
